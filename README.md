@@ -15,7 +15,7 @@ $ composer require garlic/user
 
 ```bash
 # Social login
-FACEBOOK_CLIENT_ID=80374704645745674
+FACEBOOK_CLIENT_ID=example_client_id
 FACEBOOK_CLIENT_SECRET=example_secret
 
 SOCIAL_ERROR_TTL=300
@@ -214,7 +214,7 @@ scheb_two_factor:
     # Google Authenticator config
     google:
         enabled: true                    # If Google Authenticator should be enabled, default false
-        server_name: ScialMedia.Market   # Server name used in QR code
+        server_name: example.server.name   # Server name used in QR code
         issuer: Sequrity                 # Issuer name used in QR code
         template: ~                      # Template used to render the authentication form
 
