@@ -1,0 +1,21 @@
+{
+  "name": "garlic/user",
+  "description": "User Bundle",
+  "keywords": ["Microservises user bundle", "User Bundle", "Microservices"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Evgeniy Ivashko",
+      "email": "evgeniyivashko@gmail.com"
+    }
+  ],
+  "type": "symfony-bundle",
+  "autoload": {
+    "psr-4": {
+      "Garlic\\User\\": ""
+    }
+  },
+  "require": {
+    "php": ">=7.1"
+  }
+}

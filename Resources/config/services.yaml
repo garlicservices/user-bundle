@@ -1,0 +1,174 @@
+parameters:
+    locale: 'en'
+    hwi_oauth.authentication.listener.oauth.class: Garlic\User\Security\OAuthListener
+    garlic_user.security.ldap_user_provider.class: Garlic\User\Security\LdapUserProvider
+    garlic_user.user.registration.service.class: Garlic\User\Service\User\Registration
+    garlic_user.user.edit.service.class: Garlic\User\Service\User\Edit
+    garlic_user.user.resetting.service.class: Garlic\User\Service\User\Resetting
+    garlic_user.user.avatar.service.class: Garlic\User\Service\User\Avatar
+    garlic_user.user.two_factor.service.class: Garlic\User\Service\User\TwoFactor
+    garlic_user.social_network.connect.service.class: Garlic\User\Service\SocialNetwork\Connect
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Symfony\Component\Ldap\Ldap:
+        arguments:
+            - '@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter'
+
+    Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
+        arguments:
+            - host: '%env(LDAP_HOST)%'
+
+    security.user.provider.ldap:
+        class: '%garlic_user.security.ldap_user_provider.class%'
+        arguments: [null, null, null, null, null, null, null, null]
+        abstract: true
+
+    service.profile.form.type:
+        class: Garlic\User\Form\Type\ProfileFormType
+        arguments:
+            - '%fos_user.model.user.class%'
+        tags:
+            - { name: form.type, alias: fos_user_profile }
+
+    service.registration.form.type:
+        class: Garlic\User\Form\Type\RegistrationFormType
+        arguments:
+            - '%fos_user.model.user.class%'
+        tags:
+            - { name: form.type, alias: fos_user_registration }
+
+    # Пример
+    hwi_oauth.user.provider.entity:
+        class: Garlic\User\Security\FOSUBUserProvider
+        arguments:
+            - '@fos_user.user_manager'
+            - {'facebook': 'facebookId', 'google': 'googleId'}
+
+    hwi_oauth_authentication.handler.authentication_success:
+        class: Garlic\User\Security\AuthenticationSuccessHandler
+        arguments:
+            - '@service_container'
+            - '@lexik_jwt_authentication.jwt_manager'
+            - '@event_dispatcher'
+        tags:
+            - { name: monolog.logger, channel: security }
+
+    # Костыль (т.к. в бандле он приватный)
+    HWI\Bundle\OAuthBundle\Security\Http\ResourceOwnerMap:
+        public: true
+        arguments:
+            - '@security.http_utils'
+            - '%hwi_oauth.resource_owners%'
+            - '%hwi_oauth.resource_ownermap.configured.secured_area%'
+        calls:
+            - [setContainer, ['@service_container']]
+
+    lexik_jwt_authentication.handler.authentication_failure:
+        class: Garlic\User\Security\AuthenticationFailureHandler
+        arguments:
+            - '@event_dispatcher'
+        tags:
+            - { name: monolog.logger, channel: security }
+
+    lexik_jwt_authentication.security.guard.jwt_token_authenticator:
+        class: Garlic\User\Security\JWTTokenAuthenticator
+        arguments:
+            - '@lexik_jwt_authentication.jwt_manager'
+            - '@event_dispatcher'
+            - '@lexik_jwt_authentication.extractor.chain_extractor'
+            - '%scheb_two_factor.security.check_path%'
+
+    fos_user.listener.resetting:
+        class: Garlic\User\EventSubscriber\ResettingSubscriber
+        arguments:
+            - '@router'
+            - '%fos_user.resetting.token_ttl%'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    service.request_subscriber:
+        class: Garlic\User\EventSubscriber\RequestSubscriber
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    service.event.jwt_created_listener:
+        class: Garlic\User\EventListener\JWTCreatedListener
+        arguments:
+            - '@request_stack'
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    garlic_user.user.resetting.service:
+        class: '%garlic_user.user.resetting.service.class%'
+        public: true
+        arguments:
+            - '@fos_user.resetting.form.factory'
+            - '@fos_user.user_manager'
+            - '@fos_user.util.token_generator'
+            - '@fos_user.mailer'
+            - '@event_dispatcher'
+            - '@translator'
+            - '%fos_user.resetting.retry_ttl%'
+
+    garlic_user.user.avatar.service:
+        class: '%garlic_user.user.avatar.service.class%'
+        public: true
+        arguments:
+            - '@form.factory'
+            - '@translator'
+            - '@router'
+            - '%kernel.root_dir%'
+
+    garlic_user.user.registration.service:
+        class: '%garlic_user.user.registration.service.class%'
+        public: true
+        arguments:
+            - '@fos_user.registration.form.factory'
+            - '@lexik_jwt_authentication.jwt_manager'
+            - '@fos_user.user_manager'
+            - '@fos_user.mailer'
+            - '@event_dispatcher'
+            - '@translator'
+            - '@router'
+            - '%register.confirmation.resent_email.timeout%'
+
+    garlic_user.user.two_factor.service:
+        class: '%garlic_user.user.two_factor.service.class%'
+        public: true
+        arguments:
+            - '@lexik_jwt_authentication.jwt_manager'
+            - '@scheb_two_factor.security.google_authenticator'
+            - '@fos_user.user_manager'
+            - '@event_dispatcher'
+            - '%scheb_two_factor.parameter_names.trusted%'
+
+    garlic_user.user.edit.service:
+        class: '%garlic_user.user.edit.service.class%'
+        public: true
+        arguments:
+            - '@fos_user.profile.form.factory'
+            - '@fos_user.change_password.form.factory'
+            - '@fos_user.user_manager'
+            - '@event_dispatcher'
+            - '@translator'
+
+    garlic_user.social_network.connect.service:
+        class: '%garlic_user.social_network.connect.service.class%'
+        public: true
+        arguments:
+            - '@fos_user.registration.form.factory'
+            - '@hwi_oauth.registration.form.handler'
+            - '@hwi_oauth.account.connector'
+            - '@lexik_jwt_authentication.jwt_manager'
+            - '@fos_user.user_manager'
+            - '@event_dispatcher'
+            - '@translator'
+            - '@router'
+            - '%hwi_oauth.connect%'
