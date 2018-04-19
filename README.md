@@ -1,5 +1,6 @@
 Garlic User bundle
 =====================
+This bundle helps create Users service based on Garlic framework
 
 ### User bundle based on FOSUserBundle
 
@@ -17,22 +18,25 @@ $ composer require garlic/user
 # Social login
 FACEBOOK_CLIENT_ID=example_client_id
 FACEBOOK_CLIENT_SECRET=example_secret
-
 SOCIAL_ERROR_TTL=300
 
+# Mailer config
 MAILER_USER=admin
 MAILER_PASSWORD=null
 MAILER_FROM_EMAIL=admin@example.host
 
+# Main admin credentials
 ROLE_ADMIN_USER=admin_user_name
 ROLE_ADMIN_PASSWORD=admin_password
 
+# Ldap host (use if configured)
 LDAP_HOST=example.ldap.host
 
 APPLICATION_TOKEN=31ae66c47c0c6373434b3e431fdf8gh
 
 PROTOCOL=http
 
+# Image settings
 AVATAR_DIRECTORY=public/avatar
 AVATAR_RELATIVE_DIRECTORY=public/avatar
 
