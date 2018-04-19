@@ -31,9 +31,7 @@ ROLE_ADMIN_PASSWORD=admin_password
 
 # Ldap host (use if configured)
 LDAP_HOST=example.ldap.host
-
 APPLICATION_TOKEN=31ae66c47c0c6373434b3e431fdf8gh
-
 PROTOCOL=http
 
 # Image settings
