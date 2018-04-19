@@ -1,6 +1,6 @@
 {
   "name": "garlic/user",
-  "description": "User Bundle",
+  "description": "Symfony 4 User Bundle for Garlic microservice framework",
   "keywords": ["Microservises user bundle", "User Bundle", "Microservices"],
   "license": "MIT",
   "authors": [
