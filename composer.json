@@ -24,7 +24,8 @@
     "php-http/guzzle6-adapter": "1.1.*",
     "php-http/httplug": "1.1.*",
     "lexik/jwt-authentication-bundle": "^2.4",
-    "predis/predis": "^1.1"
+    "predis/predis": "^1.1",
+    "paragonie/random_compat": "2.0.11"
 
   }
 }
