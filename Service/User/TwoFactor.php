@@ -63,7 +63,7 @@ class TwoFactor
         GoogleAuthenticator $googleAauthenticator,
         UserManagerInterface $userManager,
         EventDispatcherInterface $eventDispatcher,
-        string $sessionName
+        string $sessionName = 'session'
     ) {
         $this->jwtManager = $jwtManager;
         $this->googleAauthenticator = $googleAauthenticator;

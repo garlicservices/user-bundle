@@ -137,7 +137,6 @@ services:
             - '@event_dispatcher'
             - '@translator'
             - '@router'
-            - '%register.confirmation.resent_email.timeout%'
 
     garlic_user.user.two_factor.service:
         class: '%garlic_user.user.two_factor.service.class%'
@@ -147,7 +146,6 @@ services:
             - '@scheb_two_factor.security.google_authenticator'
             - '@fos_user.user_manager'
             - '@event_dispatcher'
-            - '%scheb_two_factor.parameter_names.trusted%'
 
     garlic_user.user.edit.service:
         class: '%garlic_user.user.edit.service.class%'

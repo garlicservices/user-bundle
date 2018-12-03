@@ -83,7 +83,7 @@ class Registration
         EventDispatcherInterface $eventDispatcher,
         TranslatorInterface $translator,
         RouterInterface $router,
-        int $resentEmailTtl
+        int $resentEmailTtl = 3600
     ) {
         $this->formFactory = $formFactory;
         $this->jwtManager = $jwtManager;
