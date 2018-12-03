@@ -17,13 +17,14 @@
   },
   "require": {
     "php": ">=7.1",
-    "scheb/two-factor-bundle": "^3.16",
-    "hwi/oauth-bundle": "^0.6.3",
+    "scheb/two-factor-bundle": "2.14.0",
+    "hwi/oauth-bundle": "^0.6.1",
     "psr/http-client": "^1.0",
     "guzzlehttp/guzzle": "^6.0",
     "php-http/guzzle6-adapter": "1.1.*",
     "php-http/httplug": "1.1.*",
-    "lexik/jwt-authentication-bundle": "^2.6"
+    "lexik/jwt-authentication-bundle": "^2.4",
+    "predis/predis": "^1.1"
 
   }
 }
