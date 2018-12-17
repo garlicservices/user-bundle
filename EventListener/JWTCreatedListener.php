@@ -42,8 +42,10 @@ class JWTCreatedListener
         if ($user instanceof User) {
             $payload['id'] = $user->getId();
             $payload['email'] = $user->getEmail();
+            $payload['username'] = $user->getUsername();
         } else {
-            $payload['email'] = $user->getUsername();
+            $payload['email'] = $user->getEmail();
+            $payload['username'] = $user->getUsername();
         }
 
         if ($user instanceof TwoFactorInterface
