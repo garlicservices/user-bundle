@@ -38,20 +38,12 @@ class JWTCreatedListener
         $user = $event->getUser();
         $payload = $event->getData();
         $payload['ip'] = $request->getClientIp();
+        $payload['id'] = $user->getId();
+        $payload['email'] = $user->getEmail();
+        $payload['username'] = $user->getUsername();
 
-        if ($user instanceof User) {
-            $payload['id'] = $user->getId();
-            $payload['email'] = $user->getEmail();
-            $payload['username'] = $user->getUsername();
-        } else {
-            $payload['email'] = $user->getEmail();
-            $payload['username'] = $user->getUsername();
-        }
 
-        if ($user instanceof TwoFactorInterface
-            && $user->getGoogleAuthenticatorSecret()
-            && $user->isTwoFactorEnable()
-        ) {
+        if ($user instanceof TwoFactorInterface && $user->getGoogleAuthenticatorSecret() && $user->isTwoFactorEnable()) {
             $payload['tfa'] = $user->isAuthenticated();
         }
 
