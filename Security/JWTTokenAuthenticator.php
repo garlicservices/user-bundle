@@ -109,6 +109,6 @@ class JWTTokenAuthenticator extends BaseJWTTokenAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $authException)
     {
-        throw new GraphQLQueryException($authException->getMessage());
+        throw new GraphQLQueryException($authException->getMessage(), $authException->getCode());
     }
 }
