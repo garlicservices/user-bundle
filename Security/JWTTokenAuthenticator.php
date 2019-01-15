@@ -97,10 +97,10 @@ class JWTTokenAuthenticator extends BaseJWTTokenAuthenticator
             $preAuthToken->setPayload($payload);
         } catch (JWTDecodeFailureException $e) {
             if (JWTDecodeFailureException::EXPIRED_TOKEN === $e->getReason()) {
-                throw new ExpiredTokenException();
+                throw new ExpiredTokenException('Expired JWT Token', 401);
             }
 
-            throw new InvalidTokenException('Invalid JWT Token', 0, $e);
+            throw new InvalidTokenException('Invalid JWT Token', 401, $e);
         }
 
         return $preAuthToken;
