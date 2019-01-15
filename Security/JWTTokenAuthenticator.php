@@ -12,6 +12,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator as BaseJWTTokenAuthenticator;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Class JWTTokenAuthenticator
@@ -103,5 +104,16 @@ class JWTTokenAuthenticator extends BaseJWTTokenAuthenticator
         }
 
         return $preAuthToken;
+    }
+
+    /**
+     * @param Request                 $request
+     * @param AuthenticationException $authException
+     * @return \Symfony\Component\HttpFoundation\Response|void|null
+     * @throws \Exception
+     */
+    public function onAuthenticationFailure(Request $request, AuthenticationException $authException)
+    {
+        throw new \Exception($authException->getMessage(), $authException->getCode());
     }
 }
